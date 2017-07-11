@@ -1,0 +1,79 @@
+\documentclass[11pt]{article}
+\usepackage{geometry}        
+\geometry{letterpaper}    
+\usepackage[parfill]{parskip}  
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{titletoc}
+\usepackage{tikz-timing}
+\usepackage{bytefield}
+\usepackage{listings}
+\lstdefinelanguage{VHDL}{
+   morekeywords={
+     library,use,all,entity,is,port,in,out,end,architecture,of,
+     begin,and
+   },
+   morecomment=[l]--
+}
+\usepackage{xcolor}
+\colorlet{keyword}{blue!100!black!80}
+\colorlet{comment}{green!90!black!90}
+\lstdefinestyle{vhdl}{
+   language     = VHDL,
+   basicstyle   = \ttfamily,
+   keywordstyle = \color{keyword}\bfseries,
+   commentstyle = \color{comment},
+   frame = single,
+   breaklines=true,
+   postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+}
+\lstdefinestyle{c++}{
+   language = C++, 
+   keywordstyle = \color{keyword}\bfseries,
+   commentstyle = \color{comment},
+   frame = single,
+   breaklines=true,
+   postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+}
+\usepackage[capitalise,nameinlink,noabbrev]{cleveref}
+
+
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+\usepackage[colorlinks=true, pdfstartview=FitV, linkcolor=blue, 
+            citecolor=blue, urlcolor=blue]{hyperref}
+
+%\includeonly{Chapter1}
+
+
+% ------------------- Title and Author -----------------------------
+\title{ACDC DAQ Programers Manual}
+\author{Jonathan Eisch, Miles Lucas, Eric Oberla and Others} % Add your name here
+\date{}
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\section{Introduction}\label{sec:intro}
+This document is intended to document the commands sent to the ACC and ACDC cards.  
+
+It includes source listings of the source and destinations for each command as they were when this documentation was written.  New implementations may have been written since, but that is outside the scope of this document.
+\startcontents[chapters]
+\section{Commands}\label{sec:commands}
+\startcontents[chapters]
+\printcontents[chapters]{}{1}{}
+\include{commands/template}
+% add newly added commands here:
+%\include{commands/newcommand}
+
+
+%\bibliographystyle{plain-annote}
+%\bibliography{mybibliography}
+
+
+\end{document}
+\end
+
