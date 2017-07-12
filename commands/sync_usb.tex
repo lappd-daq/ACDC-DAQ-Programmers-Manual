@@ -14,7 +14,7 @@ This command does something regarding to syncing the usb
 	\bitbox{12}{\color{lightgray}\rule{\width}{\height}} & \bitbox{4}{0xF} & \bitbox{15}{\color{lightgray}\rule{\width}{\height}} \bitbox{1}{\rotatebox{90}{En}} \\
 
 \end{bytefield}
-\caption{Command 0xE bit fields}
+\caption{Command 0xF bit fields}
 \end{center}
 \end{figure}
 
@@ -22,9 +22,7 @@ This command does something regarding to syncing the usb
 \begin{tabular}{p{0.15\textwidth}p{0.20\textwidth}p{0.65\textwidth}}
 	Bit Range & Name &  Description\\
 	\hline
-	31-20 & Unused &  \\
 	19-16 & \textbf{0xF} & Command marker \\0
-	15-1 & Unused & \\
 	0 & En & Boolean to enable or disable usb sync \\
 	\hline
 \end{tabular}
