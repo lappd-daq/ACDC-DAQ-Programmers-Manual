@@ -38,6 +38,17 @@
 }
 \usepackage[capitalise,nameinlink,noabbrev]{cleveref}
 
+% Workaround for bytefield to make sure characters with tails appear on the same baseline
+\newlength{\maxheight}
+\setlength{\maxheight}{\heightof{W}}
+\newcommand{\baselinealign}[1]{%
+	\centering
+	\raisebox{0pt}[\maxheight][0pt]{#1}%
+}
+
+
+% color for use in 'unused bytes' for bytefield
+\definecolor{lightgray}{gray}{0.8}
 
 \DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
 
@@ -61,12 +72,82 @@
 This document is intended to document the commands sent to the ACC and ACDC cards.  
 
 It includes source listings of the source and destinations for each command as they were when this documentation was written.  New implementations may have been written since, but that is outside the scope of this document.
+
+The command protocol for each 32-bit instruction set is shown in \autoref{byte:protocol}.
+
+\begin{figure}[hb!]
+	\begin{center}
+		\begin{bytefield}[boxformatting=\baselinealign, endianness=big,bitwidth=1.1em]{32}
+			
+			\bitheader{0-31} \\ 
+			\bitbox{3}{open} & \bitbox{4}{FE mask} & \bitbox{5}{chip mask} & \bitbox{4}{instruct} & \bitbox{4}{opt inst} & \bitbox{12}{value}\\
+			
+		\end{bytefield}
+		\caption{Command protocol}
+		\label{byte:protocol}
+	\end{center}
+\end{figure}
+
+This is parsed on the front-end board like this \\ 
+
+\begin{lstlisting}[style=vhdl]
+--parse 32 bit instruction word: 
+INSTRUCT_PSEC_MASK	<= xINSTRUCT_WORD(24 downto 20); 
+INSTRUCTION             <= xINSTRUCT_WORD(19 downto 16); 
+INSTRUCTION_OPT		<= xINSTRUCT_WORD(15 downto 12); 
+INSTRUCT_VALUE 		<= xINSTRUCT_WORD(11 downto 0); 
+\end{lstlisting}
+
+\autoref{tab:instructs} lists all the instruction flags passed by software.
+
+\begin{table}[]
+	\centering
+	\caption{List of Instructions}
+	\begin{tabular}{c l}
+		Bits & Description                               \\ \hline
+		0x0  & Do nothing                                \\
+		0x1  & Set dealy-locked loop VDD control voltage \\
+		0x2  & Calibration pulse switch enable           \\
+		0x3  & Set pedestal                              \\
+		0x4  & Reset DLL                                 \\
+		0x5  & Reset internal trigger                    \\
+		0x6  & Set self trigger mask                     \\
+		0x7  & Set self trigger instructions             \\
+		0x8  & Set trigger threshold                     \\
+		0x9  & Adjust ring oscillation frequency         \\
+		0xA  & Enable/disable on-board LEDs              \\
+		0xB  & (DC) Central card FIFO toggle             \\
+		0xB  & (CC) Central card done                    \\
+		0xC  & (CC) Central card read mode               \\
+		0xD  & (CC) Align/setup SERDES                   \\
+		0xE  & (CC) USB trigger                          \\
+		0xF  & (CC) Sync USB                             \\ \hline
+	\end{tabular}
+	\label{tab:instructs}
+\end{table}
+
+The instruction for setting self-trigger instructions has many optional instructions, listed in \autoref{tab:selftriginstructs}.
+
+\begin{table}
+	\centering
+	\caption{Optional instructs for 0x7 - set self-trigger instructions}
+	\begin{tabular}{c l}
+		Bits & Description             \\ \hline
+		0x0  & enable                  \\
+		0x1  & wait for system trigger \\
+		0x2  & Measure rate only       \\
+		0x3  & Trigger sign            \\ \hline
+	\end{tabular}
+	\label{tab:selftriginstructs}
+\end{table}
 \startcontents[chapters]
 \newpage
+
+
 \section{Commands}\label{sec:commands}
 \startcontents[chapters]
 \printcontents[chapters]{}{1}{}
-\include{commands/template}
+%\include{commands/template}
 % add newly added commands here:
 %\include{commands/newcommand}
 \include{commands/sync_usb}
