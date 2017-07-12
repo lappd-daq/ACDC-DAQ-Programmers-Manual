@@ -1,0 +1,69 @@
+
+\subsection{Toggle LED}\label{command:toggleled}
+
+This command toggles the LED on all connected boards.
+
+\subsubsection{Bit Fields}
+
+\begin{figure}[hb!]
+\begin{center}
+\definecolor{lightgray}{gray}{0.8}
+\begin{bytefield}[endianness=big,bitwidth=1.1em]{32}
+
+	\bitheader{0-31} \\ 
+	\bitbox{3}{\color{lightgray}\rule{\width}{\height}} & \bitbox{4}{Brd Adr} & 
+	\bitbox{5}{\color{lightgray}\rule{\width}{\height}} & \bitbox{4}{0xA} & 
+	\bitbox{15}{\color{lightgray}\rule{\width}{\height}} & \bitbox{1}{\rotatebox{90}{En}}\\
+
+\end{bytefield}
+\caption{Command 0xA bit fields}
+\end{center}
+\end{figure}
+
+\begin{table}[h]
+\begin{tabular}{p{0.15\textwidth}p{0.20\textwidth}p{0.65\textwidth}}
+	Bit Range & Name &  Description\\
+	\hline
+	28-25 & Board Address & The address of the board. Default is 0xF \\
+	19-16 & \textbf{0xA} & Command marker \\
+	0 & Enable & Boolean to enable or disable the leds \\
+	\hline
+\end{tabular}
+\end{table}
+
+
+
+\subsubsection{Source}
+
+\textbf{acdc-daq:src/DAQinstruction.cpp}
+\begin{lstlisting}[style=c++]
+void SuMo::toggle_LED(bool EN)
+{
+     unsigned int boardAdr_all = 15;
+
+     createUSBHandles();
+     unsigned int send_word = 0x000A0000;
+     send_word = send_word | boardAdr_all << boardAdrOffset;
+
+     if(EN != false){
+       usb.sendData(send_word | 0x1);
+       if(mode == USB2x) usb2.sendData(send_word | 0x1);
+     } 
+     else{
+       usb.sendData(send_word);
+       if(mode == USB2x) usb2.sendData(send_word);
+     }
+     closeUSBHandles();
+}
+\end{lstlisting}
+
+
+
+\subsubsection{Destination}
+
+%\textbf{ACDC-Firmware:SRC/dff\_async\_rst.vhd}  % project:path/to/filename.txt
+\begin{lstlisting}[style=vhdl]
+	
+\end{lstlisting}
+
+\newpage
