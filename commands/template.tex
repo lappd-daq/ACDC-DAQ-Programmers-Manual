@@ -31,11 +31,9 @@ Bit Range & Name &  Description\\
 void SuMo::software_trigger_slaveDevice(unsigned int SOFT_TRIG_MASK, bool set_bin, unsigned int bin)
 {
     usb2.createHandles();
-    //usb.sendData((unsigned int)0x000E0000);//software trigger
     const unsigned int hi_cmd = 0x000E0000;    
     unsigned int send_word = hi_cmd | SOFT_TRIG_MASK | set_bin << 4 | bin << 5;
     usb2.sendData(send_word);
-    //printf("sent software trigger\n");
     usb2.freeHandles();
 }
 \end{lstlisting}

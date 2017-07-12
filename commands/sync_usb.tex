@@ -1,0 +1,62 @@
+
+\subsection{Sync Usb}\label{command:syncusb}
+
+This command does something regarding to syncing the usb
+
+\subsubsection{Bit Fields}
+
+\begin{figure}[hb!]
+\begin{center}
+\definecolor{lightgray}{gray}{0.8}
+\begin{bytefield}[endianness=big,bitwidth=1.1em]{32}
+
+	\bitheader{0-31} \\ 
+	\bitbox{12}{\color{lightgray}\rule{\width}{\height}} & \bitbox{4}{0xF} & \bitbox{15}{\color{lightgray}\rule{\width}{\height}} \bitbox{1}{\rotatebox{90}{En}} \\
+
+\end{bytefield}
+\caption{Command 0xE bit fields}
+\end{center}
+\end{figure}
+
+\begin{table}[h]
+\begin{tabular}{p{0.15\textwidth}p{0.20\textwidth}p{0.65\textwidth}}
+	Bit Range & Name &  Description\\
+	\hline
+	31-20 & Unused &  \\
+	19-16 & \textbf{0xF} & Command marker \\0
+	15-1 & Unused & \\
+	0 & En & Boolean to enable or disable usb sync \\
+	\hline
+\end{tabular}
+\end{table}
+
+
+
+\subsubsection{Source}
+
+\textbf{acdc-daq:src/DAQinstruction.cpp}
+\begin{lstlisting}[style=c++]
+void SuMo::sync_usb(bool SYNC) {
+     createUSBHandles();
+     if(SYNC != false) { //enable USB_SYNC
+ 	 usb.sendData((unsigned int)0x000F0001);    
+    	 if(mode == USB2x) usb2.sendData((unsigned int)0x000F0001);
+     } else { //disable USB_SYNC
+  	 usb.sendData((unsigned int)0x000F0000);
+     	 if(mode == USB2x) usb2.sendData((unsigned int)0x000F0000);
+      
+     }
+     closeUSBHandles();
+}
+\end{lstlisting}
+
+
+
+\subsubsection{Destination}
+
+%\textbf{ACDC-Firmware:SRC/dff\_async\_rst.vhd}  % project:path/to/filename.txt
+\begin{lstlisting}[style=vhdl]
+	
+\end{lstlisting}
+
+\newpage
