@@ -11,11 +11,25 @@
 	% Fill in bytefield here
 	\bitbox{3}{\color{lightgray}\rule{\width}{\height}} & \bitbox{4}{brd adr} &
 	\bitbox{5}{\color{lightgray}\rule{\width}{\height}} & \bitbox{4}{0x2} &
-	\bitbox{16}{channels} \\ 
+	\bitbox{16}{channels} \\
 	\end{bytefield}
-\caption{Command 0xA bit fields} % Appropriate caption here
+\caption{0x2 - Cal enabled} % Appropriate caption here
 \end{center}
 \end{figure}
+
+\begin{figure}[hb!]
+	\begin{center}
+		\begin{bytefield}[endianness=big,bitwidth=1.1em]{32}
+			\bitheader{0-31} \\ 
+			% Fill in bytefield here
+			\bitbox{3}{\color{lightgray}\rule{\width}{\height}} & \bitbox{4}{brd adr} &
+			\bitbox{5}{\color{lightgray}\rule{\width}{\height}} & \bitbox{4}{0x2} &
+			\bitbox{16}{\color{lightgray}\rule{\width}{\height}}  \\ 
+		\end{bytefield}
+		\caption{0x2 - Cal disabled} % Appropriate caption here
+	\end{center}
+\end{figure}
+
 
 \begin{table}[h]	
 % fill out bit information here
@@ -23,7 +37,8 @@
 	Bits  & Name          & Description                             \\ \hline
 	28-25 & board address & The address of the board (default = 15) \\
 	19-16 & \textbf{0x2}  & Command marker                          \\
-	 3-0  & channels  & Channels (default = 0x7FFF)                 \\ \hline
+	15-0  & channels      & Channels (default = 0x7FFF)             \\
+	      &               & Not used if cal is disabled             \\ \hline
 \end{tabular}
 \end{table}
 

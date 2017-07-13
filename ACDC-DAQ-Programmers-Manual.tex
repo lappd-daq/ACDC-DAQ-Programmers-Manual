@@ -92,7 +92,6 @@ The command protocol for each 32-bit instruction set is shown in \autoref{byte:p
 This is parsed on the front-end board like this \\ 
 
 \begin{lstlisting}[style=vhdl]
---parse 32 bit instruction word: 
 INSTRUCT_PSEC_MASK	<= xINSTRUCT_WORD(24 downto 20); 
 INSTRUCTION             <= xINSTRUCT_WORD(19 downto 16); 
 INSTRUCTION_OPT		<= xINSTRUCT_WORD(15 downto 12); 
@@ -134,8 +133,8 @@ The instruction for setting self-trigger instructions has many optional instruct
 	\caption{Optional instructs for 0x7 - set self-trigger instructions}
 	\begin{tabular}{p{0.10\textwidth} p{0.6\textwidth}}
 		Bits & Description             \\ \hline
-		0x0  & enable                  \\
-		0x1  & wait for system trigger \\
+		0x0  & Enable                  \\
+		0x1  & Wait for system trigger \\
 		0x2  & Measure rate only       \\
 		0x3  & Trigger sign            \\ \hline
 	\end{tabular}
@@ -158,6 +157,7 @@ The instruction for setting self-trigger instructions has many optional instruct
 \include{instructs/set_self_trigger_hi}
 \include{instructs/read_acdcRam}
 \include{instructs/toggle_cal}
+\include{instructs/set_pedestal_value}
 
 %\bibliographystyle{plain-annote}
 %\bibliography{mybibliography}

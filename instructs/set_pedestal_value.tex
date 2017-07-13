@@ -1,0 +1,64 @@
+
+\subsection{0x3 -Set Pedestal Value}\label{inst:setpedvalue}
+
+% Add description of command here
+
+\subsubsection{Bit Fields}
+\begin{figure}[hb!]
+\begin{center}
+	\begin{bytefield}[endianness=big,bitwidth=1.1em]{32}
+	\bitheader{0-31} \\ 
+	% Fill in bytefield here
+	\bitbox{3}{\color{lightgray}\rule{\width}{\height}} & \bitbox{4}{brd adr} &
+	\bitbox{5}{psec mask} & \bitbox{4}{0x3} &
+	\bitbox{4}{\color{lightgray}\rule{\width}{\height}} & \bitbox{12}{value} \\ 
+	\end{bytefield}
+\caption{Command 0x3 bit fields} % Appropriate caption here
+\end{center}
+\end{figure}
+
+\begin{table}[h]	
+% fill out bit information here
+\begin{tabular}{p{0.06\textwidth}p{0.30\textwidth}p{0.64\textwidth}}
+	Bits  & Name          & Description                             \\ \hline
+	28-25 & board address & The address of the board (default = 15) \\
+	24-20 & psec mask     & Mask for chip addresses                 \\
+	19-16 & \textbf{0x2}  & Command marker                          \\
+	12-0  & value         & Pedestal value (default = 0x800)        \\ \hline
+\end{tabular}
+\end{table}
+
+
+
+\subsubsection{Source}
+\textbf{acdc-daq:src/DAQinstruction.cpp}
+% Put c++ source code here
+\begin{lstlisting}[style=c++]
+void SuMo::set_pedestal_value(  unsigned int PED_VALUE,
+unsigned int boardAdr,
+int device,
+unsigned int psec_mask)
+{
+	createUSBHandles();
+	const unsigned int hi_cmd = 0x00030000;
+	unsigned int send_word = hi_cmd | PED_VALUE
+	| boardAdr << boardAdrOffset
+	| psec_mask << psecAdrOffset;
+	
+	if(device == 0)                 usb.sendData(send_word);
+	if(device == 1 && mode==USB2x)  usb2.sendData(send_word);
+	
+	closeUSBHandles();
+}
+\end{lstlisting}
+
+
+
+\subsubsection{Destination}
+\textbf{project:path/to/filename.vhd}  % project:path/to/filename.txt
+%put vhdl firmware code here
+\begin{lstlisting}[style=vhdl]
+
+\end{lstlisting}
+
+\newpage
