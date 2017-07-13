@@ -1,5 +1,5 @@
 
-\subsection{0xA - Toggle LED}\label{command:toggleled}
+\subsection{0xA - Toggle LED}\label{inst:toggleled}
 
 This command toggles the LED on all connected boards.
 
@@ -11,9 +11,9 @@ This command toggles the LED on all connected boards.
 \begin{bytefield}[endianness=big,bitwidth=1.1em]{32}
 
 	\bitheader{0-31} \\ 
-	\bitbox{3}{\color{lightgray}\rule{\width}{\height}} & \bitbox{4}{Brd Adr} & 
+	\bitbox{3}{\color{lightgray}\rule{\width}{\height}} & \bitbox{4}{brd adr} & 
 	\bitbox{5}{\color{lightgray}\rule{\width}{\height}} & \bitbox{4}{0xA} & 
-	\bitbox{15}{\color{lightgray}\rule{\width}{\height}} & \bitbox{1}{\rotatebox{90}{En}}\\
+	\bitbox{15}{\color{lightgray}\rule{\width}{\height}} & \bitbox{1}{\rotatebox{90}{\small En}}\\
 
 \end{bytefield}
 \caption{Command 0xA bit fields}
@@ -21,13 +21,11 @@ This command toggles the LED on all connected boards.
 \end{figure}
 
 \begin{table}[h]
-\begin{tabular}{p{0.15\textwidth}p{0.20\textwidth}p{0.65\textwidth}}
-	Bit Range & Name &  Description\\
-	\hline
-	28-25 & Board Address & The address of the board. Default is 0xF \\
-	19-16 & \textbf{0xA} & Command marker \\
-	0 & Enable & Boolean to enable or disable the leds \\
-	\hline
+\begin{tabular}{p{0.06\textwidth}p{0.30\textwidth}p{0.64\textwidth}}
+	Bits  & Name          & Description                              \\ \hline
+	28-25 & board address & The address of the board. Default is 0xF \\
+	19-16 & \textbf{0xA}  & Command marker                           \\
+	0     & enable        & Enable the leds                          \\ \hline
 \end{tabular}
 \end{table}
 

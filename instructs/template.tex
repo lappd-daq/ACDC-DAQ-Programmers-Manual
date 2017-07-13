@@ -1,0 +1,44 @@
+
+\subsection{Template}\label{inst:template}
+
+% Add description of command here
+
+\subsubsection{Bit Fields}
+\begin{figure}[hb!]
+\begin{center}
+	\begin{bytefield}[endianness=big,bitwidth=1.1em]{32}
+	\bitheader{0-31} \\ 
+	% Fill in bytefield here
+	\bitbox{32}{} \\ 
+	\end{bytefield}
+\caption{Command ... bit fields} % Appropriate caption here
+\end{center}
+\end{figure}
+
+\begin{table}[h]	
+% fill out bit information here
+\begin{tabular}{p{0.06\textwidth}p{0.30\textwidth}p{0.64\textwidth}}
+	Bits & Name & Description \\ \hline
+	31-0 & Bits &             \\ \hline
+\end{tabular}
+\end{table}
+
+
+
+\subsubsection{Source}
+\textbf{project:path/to/filename.cpp}
+% Put c++ source code here
+\begin{lstlisting}[style=c++]
+
+\end{lstlisting}
+
+
+
+\subsubsection{Destination}
+\textbf{project:path/to/filename.vhd}  % project:path/to/filename.txt
+%put vhdl firmware code here
+\begin{lstlisting}[style=vhdl]
+
+\end{lstlisting}
+
+\newpage

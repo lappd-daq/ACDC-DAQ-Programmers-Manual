@@ -80,7 +80,8 @@ The command protocol for each 32-bit instruction set is shown in \autoref{byte:p
 		\begin{bytefield}[boxformatting=\baselinealign, endianness=big,bitwidth=1.1em]{32}
 			
 			\bitheader{0-31} \\ 
-			\bitbox{3}{open} & \bitbox{4}{FE mask} & \bitbox{5}{chip mask} & \bitbox{4}{instruct} & \bitbox{4}{opt inst} & \bitbox{12}{value}\\
+			\bitbox{3}{open} & \bitbox{4}{FE mask} & \bitbox{5}{chip mask} & 
+			\bitbox{4}{instruct} & \bitbox{4}{opt inst} & \bitbox{12}{value}\\
 			
 		\end{bytefield}
 		\caption{Command protocol}
@@ -144,17 +145,17 @@ The instruction for setting self-trigger instructions has many optional instruct
 \newpage
 
 
-\section{Commands}\label{sec:commands}
+\section{Instructions}\label{sec:instructions}
 \startcontents[chapters]
 \printcontents[chapters]{}{1}{}
-%\include{commands/template}
+\include{instructs/template}
 % add newly added commands here:
 %\include{commands/newcommand}
-\include{commands/sync_usb}
-\include{commands/align_lvds}
-\include{commands/toggle_led}
-\include{commands/set_self_trigger_lo}
-
+\include{instructs/sync_usb}
+\include{instructs/align_lvds}
+\include{instructs/toggle_led}
+\include{instructs/set_self_trigger_lo}
+\include{instructs/set_self_trigger_hi}
 
 %\bibliographystyle{plain-annote}
 %\bibliography{mybibliography}

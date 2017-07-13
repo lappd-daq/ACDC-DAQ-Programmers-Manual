@@ -1,0 +1,74 @@
+
+\subsection{0x7 - Set Self-trigger hi}\label{inst:selftriggerhi}
+
+This command sends certain trigger commands
+
+\subsubsection{Bit Fields}
+
+\begin{figure}[hb!]
+\begin{center}
+\definecolor{lightgray}{gray}{0.8}
+\begin{bytefield}[endianness=big,bitwidth=1.1em]{32}
+
+	\bitheader{0-31} \\ 
+	\bitbox{3}{\color{lightgray}\rule{\width}{\height}} & \bitbox{4}{brd adr} & 
+	\bitbox{5}{\color{lightgray}\rule{\width}{\height}} & \bitbox{4}{0x7} & 
+	\bitbox{4}{0x8} & \bitbox{1}{1} &
+	\bitbox{5}{chan} & \bitbox{3}{asic} & \bitbox{3}{width}
+
+\end{bytefield}
+\caption{Command 0x7 bit fields}
+\end{center}
+\end{figure}
+
+\begin{table}[h]
+\begin{tabular}{p{0.06\textwidth}p{0.30\textwidth}p{0.64\textwidth}}
+	Bits  & Name                    & Description                                                     \\ \hline
+	28-25 & board address           & The address of the board.                                       \\
+	19-16 & \textbf{0x7}            & Command marker                                                  \\
+	15-12 & \textbf{0x8}            & Optional command marker                                         \\
+	10-6  & channel coincidence min & Number of coincident channels to enable trigger (\textless 30)  \\
+	5-3   & asic coincidence min    & Number of coincident asic chips to enable trigger (\textless 5) \\
+	2-0   & coincidence pulse width & Width of coincidence pulse in unknown units (\textless 7)       \\ \hline
+\end{tabular}
+\end{table}
+
+
+
+\subsubsection{Source}
+
+\textbf{acdc-daq:src/DAQinstruction.cpp}
+\begin{lstlisting}[style=c++]
+void SuMo::set_self_trigger_hi(unsigned int coinc_pulse_width,
+	unsigned int asic_coincidence_min,
+	unsigned int channel_coincidence_min,
+	unsigned int boardAdr,
+	int device)
+	{
+	const unsigned int hi_cmd = 0x00078000;
+	unsigned int send_word = hi_cmd | 1 << 11
+	| channel_coincidence_min << 6
+	| asic_coincidence_min << 3
+	| coinc_pulse_width
+	| boardAdr << boardAdrOffset;
+	//printf("%x\n", send_word);
+
+	createUSBHandles();
+
+	if(device == 0) usb.sendData((unsigned int)send_word);
+	if(device == 1 && mode == USB2x) usb2.sendData((unsigned int)send_word);
+
+	closeUSBHandles();
+}
+\end{lstlisting}
+
+
+
+\subsubsection{Destination}
+
+%\textbf{ACDC-Firmware:SRC/dff\_async\_rst.vhd}  % project:path/to/filename.txt
+\begin{lstlisting}[style=vhdl]
+	
+\end{lstlisting}
+
+\newpage

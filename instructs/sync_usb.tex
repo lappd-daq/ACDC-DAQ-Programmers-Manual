@@ -1,5 +1,5 @@
 
-\subsection{0xF - Sync Usb}\label{command:syncusb}
+\subsection{0xF - Sync Usb}\label{inst:syncusb}
 
 This command does something regarding to syncing the usb
 
@@ -10,7 +10,8 @@ This command does something regarding to syncing the usb
 \begin{bytefield}[endianness=big,bitwidth=1.1em]{32}
 
 	\bitheader{0-31} \\ 
-	\bitbox{12}{\color{lightgray}\rule{\width}{\height}} & \bitbox{4}{0xF} & \bitbox{15}{\color{lightgray}\rule{\width}{\height}} \bitbox{1}{\rotatebox{90}{En}} \\
+	\bitbox{12}{\color{lightgray}\rule{\width}{\height}} & \bitbox{4}{0xF} & 
+	\bitbox{15}{\color{lightgray}\rule{\width}{\height}} \bitbox{1}{\rotatebox{90}{\small en}} \\
 
 \end{bytefield}
 \caption{Command 0xF bit fields}
@@ -18,12 +19,10 @@ This command does something regarding to syncing the usb
 \end{figure}
 
 \begin{table}[h]
-\begin{tabular}{p{0.15\textwidth}p{0.20\textwidth}p{0.65\textwidth}}
-	Bit Range & Name &  Description\\
-	\hline
-	19-16 & \textbf{0xF} & Command marker \\
-	0 & En & Boolean to enable or disable usb sync \\
-	\hline
+\begin{tabular}{p{0.06\textwidth}p{0.30\textwidth}p{0.64\textwidth}}
+	Bits  & Name         & Description     \\ \hline
+	19-16 & \textbf{0xF} & Command marker  \\
+	0     & enable       & Enable USB sync \\ \hline
 \end{tabular}
 \end{table}
 

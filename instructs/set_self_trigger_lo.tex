@@ -1,0 +1,90 @@
+
+\subsection{0x7 - Set Self-trigger Lo}\label{inst:selftriggerlo}
+
+This command sends certain trigger commands
+
+\subsubsection{Bit Fields}
+
+\begin{figure}[hb!]
+\begin{center}
+\definecolor{lightgray}{gray}{0.8}
+\begin{bytefield}[endianness=big,bitwidth=1.1em]{32}
+
+	\bitheader{0-31} \\ 
+	\bitbox{3}{\color{lightgray}\rule{\width}{\height}} & \bitbox{4}{brd adr} & 
+	\bitbox{5}{\color{lightgray}\rule{\width}{\height}} & \bitbox{4}{0x7} & 
+	\bitbox{4}{0x0} & \bitbox{1}{0} & 
+	\bitbox{4}{coinc} & \bitbox{1}{\rotatebox{90}{\tiny val}} &
+	\bitbox{1}{\rotatebox{90}{\tiny coin}} & \bitbox{1}{\rotatebox{90}{\tiny sma}} &
+	\bitbox{1}{\rotatebox{90}{\tiny sign}} & \bitbox{1}{\rotatebox{90}{\tiny rate}} &
+	\bitbox{1}{\rotatebox{90}{\tiny sys}} & \bitbox{1}{\rotatebox{90}{\tiny en}}\\
+
+\end{bytefield}
+\caption{Command 0x7 bit fields}
+\end{center}
+\end{figure}
+
+\begin{table}[h]
+\begin{tabular}{p{0.06\textwidth}p{0.30\textwidth}p{0.64\textwidth}}
+	Bits  & Name               & Description                                                    \\ \hline
+	28-25 & board address      & The address of the board. Default is 0xF                       \\
+	19-16 & \textbf{0x7}       & Command marker                                                 \\
+	15-12 & \textbf{0x0}       & Optional command marker                                        \\
+	10-7  & coincidence window & The window of unknown units for the coincidence (\textless 15) \\
+	6     & use trig valid     & Use trig valid as a reset on AC/DC                             \\
+	5     & use coincidence    & Use channel coincidence                                        \\
+	4     & use board sma trig & Use SMA input on AC/DC board for trigger                       \\
+	3     & trig sign          & 1 for rising edge, 0 for falling edge                          \\
+	2     & rate only          &                                                                \\
+	1     & sys trig option    &                                                                \\
+	0     & trig enable        & Enables self-trigger                                           \\ \hline
+\end{tabular}
+\end{table}
+
+
+
+\subsubsection{Source}
+
+\textbf{acdc-daq:src/DAQinstruction.cpp}
+\begin{lstlisting}[style=c++]
+void SuMo::set_self_trigger_lo(     bool ENABLE_TRIG,
+				    bool SYS_TRIG_OPTION,
+				    bool RATE_ONLY,
+				    bool TRIG_SIGN,
+				    bool USE_BOARD_SMA_TRIG,
+				    bool USE_COINCIDENCE,
+				    bool USE_TRIG_VALID_AS_RESET,
+				    unsigned int coinc_window,
+				    unsigned int boardAdr,
+				    int device)
+{
+    const unsigned int hi_cmd = 0x00070000;
+    unsigned int send_word = hi_cmd | 0 << 11
+      | USE_TRIG_VALID_AS_RESET << 6
+      | USE_COINCIDENCE << 5
+      | USE_BOARD_SMA_TRIG << 4
+      | TRIG_SIGN << 3 | RATE_ONLY << 2
+      | SYS_TRIG_OPTION << 1 | ENABLE_TRIG
+      | coinc_window << 7
+      | boardAdr << boardAdrOffset;
+    //printf("%i\n", send_word);
+
+    createUSBHandles();
+
+    if(device == 0)                  usb.sendData((unsigned int)send_word);
+    if(device == 1 && mode == USB2x) usb2.sendData((unsigned int)send_word);
+
+    closeUSBHandles();
+}
+\end{lstlisting}
+
+
+
+\subsubsection{Destination}
+
+%\textbf{ACDC-Firmware:SRC/dff\_async\_rst.vhd}  % project:path/to/filename.txt
+\begin{lstlisting}[style=vhdl]
+	
+\end{lstlisting}
+
+\newpage
