@@ -104,7 +104,7 @@ INSTRUCT_VALUE 		<= xINSTRUCT_WORD(11 downto 0);
 \begin{table}[]
 	\centering
 	\caption{List of Instructions}
-	\begin{tabular}{c l}
+	\begin{tabular}{p{0.10\textwidth} p{0.6\textwidth}}
 		Bits & Description                               \\ \hline
 		0x0  & Do nothing                                \\
 		0x1  & Set dealy-locked loop VDD control voltage \\
@@ -132,7 +132,7 @@ The instruction for setting self-trigger instructions has many optional instruct
 \begin{table}
 	\centering
 	\caption{Optional instructs for 0x7 - set self-trigger instructions}
-	\begin{tabular}{c l}
+	\begin{tabular}{p{0.10\textwidth} p{0.6\textwidth}}
 		Bits & Description             \\ \hline
 		0x0  & enable                  \\
 		0x1  & wait for system trigger \\
@@ -156,6 +156,8 @@ The instruction for setting self-trigger instructions has many optional instruct
 \include{instructs/toggle_led}
 \include{instructs/set_self_trigger_lo}
 \include{instructs/set_self_trigger_hi}
+\include{instructs/read_acdcRam}
+\include{instructs/toggle_cal}
 
 %\bibliographystyle{plain-annote}
 %\bibliography{mybibliography}
