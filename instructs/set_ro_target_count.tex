@@ -1,0 +1,59 @@
+
+\subsection{0x9 - Set RO Target Count}\label{inst:setrotarget}
+
+This command sets the RO Target count. \colorbox{yellow}{What is the RO target count?}\color{black}
+
+\subsubsection{Bit Fields}
+\begin{figure}[hb!]
+	\begin{center}
+		\begin{bytefield}[endianness=big,bitwidth=1.1em]{32}
+			\bitheader{0-31} \\ 
+			% Fill in bytefield here
+			\bitbox{3}{\color{lightgray}\rule{\width}{\height}} & \bitbox{4}{brd adr} &
+			\bitbox{5}{psec mask} & \bitbox{4}{0x9} &
+			\bitbox{16}{target count}\\
+		\end{bytefield}
+		\caption{0x9 Instruct Bit Fields} % Appropriate caption here
+	\end{center}
+\end{figure}
+
+\begin{table}[h]
+\begin{tabular}{p{0.06\textwidth}p{0.30\textwidth}p{0.64\textwidth}}
+	Bits  & Name          & Description                       \\ \hline
+	28-25 & board address & The address of the board.         \\
+	24-20 & psec mask     & Which psec chips to apply this to \\
+	19-16 & \textbf{0x9}  & Command marker                    \\
+	15-0  & target count  & The value of the ro target count  \\ \hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Source}
+
+\textbf{acdc-daq:src/DAQinstruction.cpp}
+\begin{lstlisting}[style=c++]
+void SuMo::set_ro_target_count(unsigned int TARGET_RO_COUNT, 
+	unsigned int boardAdr, 
+	int device,
+	unsigned int psec_mask)
+{
+	createUSBHandles();
+	const unsigned int hi_cmd = 0x00090000;    
+	unsigned int send_word = hi_cmd | TARGET_RO_COUNT | boardAdr << boardAdrOffset 
+		| psec_mask << psecAdrOffset;
+	
+	usb.sendData(send_word);
+	if(mode==USB2x) usb2.sendData(send_word);
+	
+	closeUSBHandles();
+}
+\end{lstlisting}
+
+
+
+\subsubsection{Destination}
+
+%\textbf{ACDC-Firmware:SRC/dff\_async\_rst.vhd}  % project:path/to/filename.txt
+\begin{lstlisting}[style=vhdl]
+	
+\end{lstlisting}
+

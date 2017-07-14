@@ -1,0 +1,64 @@
+
+\subsection{0x8 - Set Self-trigger Threshold}\label{inst:settrigthresh}
+
+This command sets trigger threshold
+
+\color{red}{ \huge{For some reason this seems to create a word with the psec\_mask value assigned twice. It looks like he bit shifts it 20, but does the same thing again and bit shifts it by a defined value. Sorry if that doesn't make sense just look at the 4th line of the method.}} \color{black}
+
+\subsubsection{Bit Fields}
+\begin{figure}[hb!]
+	\begin{center}
+		\begin{bytefield}[endianness=big,bitwidth=1.1em]{32}
+			\bitheader{0-31} \\ 
+			% Fill in bytefield here
+			\bitbox{3}{\color{lightgray}\rule{\width}{\height}} & \bitbox{4}{brd adr} &
+			\bitbox{5}{psec mask} & \bitbox{4}{0x8} &
+			\bitbox{4}{\color{lightgray}\rule{\width}{\height}} & \bitbox{12}{value} \\ 
+		\end{bytefield}
+		\caption{Command 0x8 bit fields} % Appropriate caption here
+	\end{center}
+\end{figure}
+
+\begin{table}[h]
+\begin{tabular}{p{0.06\textwidth}p{0.30\textwidth}p{0.64\textwidth}}
+	Bits  & Name          & Description                       \\ \hline
+	28-25 & board address & The address of the board.         \\
+	24-20 & psec mask     & Which psec chips to apply this to \\
+	19-16 & \textbf{0x8}  & Command marker                    \\
+	11-0  & value         & Trigger threshold value           \\ \hline
+\end{tabular}
+\end{table}
+
+
+
+\subsubsection{Source}
+
+\textbf{acdc-daq:src/DAQinstruction.cpp}
+\begin{lstlisting}[style=c++]
+void SuMo::set_trig_threshold(unsigned int TRIG_VALUE, 
+	unsigned int boardAdr, 
+	int device,
+	unsigned int psec_mask)
+{
+	createUSBHandles();
+	const unsigned int hi_cmd = 0x00080000;    
+	const unsigned int mask = 31;  //chip mask
+	unsigned int send_word = hi_cmd | TRIG_VALUE | psec_mask << 20 | boardAdr << boardAdrOffset
+		| psec_mask << psecAdrOffset;
+	
+	if(device == 0)                usb.sendData(send_word);
+	if(device == 1 && mode==USB2x) usb2.sendData(send_word);
+	
+	closeUSBHandles();
+}
+\end{lstlisting}
+
+
+
+\subsubsection{Destination}
+
+%\textbf{ACDC-Firmware:SRC/dff\_async\_rst.vhd}  % project:path/to/filename.txt
+\begin{lstlisting}[style=vhdl]
+	
+\end{lstlisting}
+

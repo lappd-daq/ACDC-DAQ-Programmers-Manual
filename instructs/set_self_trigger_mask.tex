@@ -1,0 +1,60 @@
+
+\subsection{0x6 - Set Self-trigger Mask}\label{inst:selftriggermask}
+
+This command sends certain trigger mask
+
+\subsubsection{Bit Fields}
+\begin{figure}[hb!]
+	\begin{center}
+		\begin{bytefield}[endianness=big,bitwidth=1.1em]{32}
+			\bitheader{0-31} \\ 
+			% Fill in bytefield here
+			\bitbox{3}{\color{lightgray}\rule{\width}{\height}} & \bitbox{4}{brd adr} &
+			\bitbox{5}{\color{lightgray}\rule{\width}{\height}} & \bitbox{4}{0x6} &
+			\bitbox{1}{\rotatebox{90}{\tiny HiLo}} & \bitbox{15}{mask}\\
+		\end{bytefield}
+		\caption{0x6} % Appropriate caption here
+	\end{center}
+\end{figure}
+
+\begin{table}[h]
+\begin{tabular}{p{0.06\textwidth}p{0.30\textwidth}p{0.64\textwidth}}
+	Bits  & Name          & Description                                       \\ \hline
+	28-25 & board address & The address of the board.                         \\
+	19-16 & \textbf{0x6}  & Command marker                                    \\
+	15    & HiLo          & Which half of the mask is being sent\footnotemark \\
+	14-0  & mask          & AC/DC channel mask                                \\ \hline
+\end{tabular}
+\end{table}
+
+\footnotetext{When set to 0, the values for the 15 least significant bits are sent, which correspond to channels 1-15. When set to 1, the values for the 15 most significant bits are sent, which correspond to channels 16-30.}
+
+\subsubsection{Source}
+
+\textbf{acdc-daq:src/DAQinstruction.cpp}
+\begin{lstlisting}[style=c++]
+void SuMo::set_self_trigger_mask(int mask, bool HiLo, unsigned int boardAdr, int device)
+{
+	unsigned int hi_cmd;
+	if(HiLo) hi_cmd = 0x00068000; 
+	else     hi_cmd = 0x00060000; 
+	
+	unsigned int send_word = hi_cmd | mask | boardAdr << boardAdrOffset;
+	
+	createUSBHandles();
+	if(device == 0)                  usb.sendData((unsigned int)send_word);
+	if(device == 1 && mode == USB2x) usb2.sendData((unsigned int)send_word);
+	
+	closeUSBHandles();
+}
+\end{lstlisting}
+
+
+
+\subsubsection{Destination}
+
+%\textbf{ACDC-Firmware:SRC/dff\_async\_rst.vhd}  % project:path/to/filename.txt
+\begin{lstlisting}[style=vhdl]
+	
+\end{lstlisting}
+
