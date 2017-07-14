@@ -46,6 +46,8 @@
 	\raisebox{0pt}[\maxheight][0pt]{#1}%
 }
 
+%Set table of contents depth to subsections
+\setcounter{tocdepth}{2}
 
 % color for use in 'unused bytes' for bytefield
 \definecolor{lightgray}{gray}{0.8}
@@ -106,7 +108,7 @@ INSTRUCT_VALUE 		<= xINSTRUCT_WORD(11 downto 0);
 	\begin{tabular}{p{0.10\textwidth} p{0.6\textwidth}}
 		Bits & Description                               \\ \hline
 		0x0  & Do nothing                                \\
-		0x1  & Set dealy-locked loop VDD control voltage \\
+		0x1  & Set delay-locked loop VDD control voltage \\
 		0x2  & Calibration pulse switch enable           \\
 		0x3  & Set pedestal                              \\
 		0x4  & Reset DLL                                 \\
@@ -147,17 +149,18 @@ The instruction for setting self-trigger instructions has many optional instruct
 \section{Instructions}\label{sec:instructions}
 \startcontents[chapters]
 \printcontents[chapters]{}{1}{}
-\include{instructs/template}
+%\include{instructs/template}
 % add newly added commands here:
 %\include{commands/newcommand}
-\include{instructs/sync_usb}
-\include{instructs/align_lvds}
-\include{instructs/toggle_led}
-\include{instructs/set_self_trigger_lo}
-\include{instructs/set_self_trigger_hi}
-\include{instructs/read_acdcRam}
 \include{instructs/toggle_cal}
 \include{instructs/set_pedestal_value}
+\include{instructs/set_self_trigger_lo}
+\include{instructs/set_self_trigger_hi}
+\include{instructs/toggle_led}
+\include{instructs/read_acdcRam}
+\include{instructs/align_lvds}
+\include{instructs/software_trigger}
+\include{instructs/sync_usb}
 
 %\bibliographystyle{plain-annote}
 %\bibliography{mybibliography}
