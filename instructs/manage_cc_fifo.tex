@@ -1,0 +1,51 @@
+
+\subsection{0xB - Manage CC FIFO}\label{inst:manageccfifo}
+
+This command manages the CC FIFO
+
+\subsubsection{Bit Fields}
+\begin{figure}[hb!]
+	\begin{center}
+		\begin{bytefield}[endianness=big,bitwidth=1.1em]{32}
+			\bitheader{0-31} \\ 
+			% Fill in bytefield here
+			\bitbox{3}{\color{lightgray}\rule{\width}{\height}} & \bitbox{4}{brd adr} &
+			\bitbox{5}{\color{lightgray}\rule{\width}{\height}} & \bitbox{4}{0xB} & 
+			\bitbox{15}{\color{lightgray}\rule{\width}{\height}} & \bitbox{1}{\rotatebox{90}{\small en}} \\
+		\end{bytefield}
+		\caption{0xB Instruct Bit Fields} % Appropriate caption here
+	\end{center}
+\end{figure}
+
+\begin{table}[h]
+	\begin{tabular}{p{0.06\textwidth}p{0.30\textwidth}p{0.64\textwidth}}
+		Bits  & Name          & Description               \\ \hline
+		28-25 & board address & The address of the board. \\
+		19-16 & \textbf{0xB}  & Command marker            \\
+		0     & enable        & Enable CC FIFO            \\ \hline
+	\end{tabular}
+\end{table}
+
+\subsubsection{Source}
+
+\textbf{acdc-daq:src/DAQinstruction.cpp}
+\begin{lstlisting}[style=c++]
+void SuMo::manage_cc_fifo(bool VALUE)
+{
+	usb.createHandles();
+	const unsigned int hi_cmd = 0x000B0000;
+	unsigned int send_word = hi_cmd | VALUE | 15 << boardAdrOffset;
+	usb.sendData(send_word);
+	usb.freeHandles();
+}
+\end{lstlisting}
+
+
+
+\subsubsection{Destination}
+
+%\textbf{ACDC-Firmware:SRC/dff\_async\_rst.vhd}  % project:path/to/filename.txt
+\begin{lstlisting}[style=vhdl]
+
+\end{lstlisting}
+
