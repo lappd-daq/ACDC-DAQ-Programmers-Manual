@@ -1,7 +1,7 @@
 
-\subsection{0x4 - Reset DLL}\label{inst:resetdll}
+\subsection{0x4 - Reset Time Stamp}\label{inst:resettimestamp}
 
-This command resets the DLL
+This command resets the time stamp
 
 \subsubsection{Bit Fields}
 \begin{figure}[hb!]
@@ -10,7 +10,7 @@ This command resets the DLL
 			\bitheader{0-31} \\ 
 			% Fill in bytefield here
 			\bitbox{3}{\color{lightgray}\rule{\width}{\height}} & \bitbox{4}{brd adr} &
-			\bitbox{5}{psec mask} & \bitbox{4}{0x4} & \bitbox{4}{0x1}
+			\bitbox{5}{\color{lightgray}\rule{\width}{\height}} & \bitbox{4}{0x4} & \bitbox{4}{0x3}
 			\bitbox{12}{\color{lightgray}\rule{\width}{\height}} \\
 		\end{bytefield}
 		\caption{0x4 Instruct Bit Fields} % Appropriate caption here
@@ -18,28 +18,25 @@ This command resets the DLL
 \end{figure}
 
 \begin{table}[h]
-\begin{tabular}{p{0.06\textwidth}p{0.30\textwidth}p{0.64\textwidth}}
-	Bits  & Name          & Description                       \\ \hline
-	28-25 & board address & The address of the board.         \\
-	24-20 & psec mask     & Which psec chips to apply this to \\
-	19-16 & \textbf{0x4}  & Command marker                    \\
-	15-12 & \textbf{0x1}  & Optional command marker           \\ \hline
-\end{tabular}
+	\begin{tabular}{p{0.06\textwidth}p{0.30\textwidth}p{0.64\textwidth}}
+		Bits  & Name          & Description               \\ \hline
+		28-25 & board address & The address of the board. \\
+		19-16 & \textbf{0x4}  & Command marker            \\
+		15-12 & \textbf{0x3}  & Optional command marker   \\ \hline
+	\end{tabular}
 \end{table}
 
 \subsubsection{Source}
 
 \textbf{acdc-daq:src/DAQinstruction.cpp}
 \begin{lstlisting}[style=c++]
-void SuMo::reset_dll(bool sync)
+void SuMo::reset_time_stamp(bool sync)
 {
 	createUSBHandles();
-	const unsigned int hi_cmd = 0x00041000;  
-	const unsigned int mask = 31; //chip mask
-	unsigned int send_word = hi_cmd |  mask << 20 | 15 << boardAdrOffset;
+	unsigned int send_word = 0x00043000 | 15 << boardAdrOffset;
 	
 	if(sync) prep_sync();
-	usb.sendData(send_word); //dll reset pulse
+	usb.sendData(send_word);
 	if(mode == USB2x) usb2.sendData(send_word);
 	if(sync) make_sync();
 	
@@ -53,6 +50,6 @@ void SuMo::reset_dll(bool sync)
 
 %\textbf{ACDC-Firmware:SRC/dff\_async\_rst.vhd}  % project:path/to/filename.txt
 \begin{lstlisting}[style=vhdl]
-	
+
 \end{lstlisting}
 
