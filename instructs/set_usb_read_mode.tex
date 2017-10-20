@@ -1,7 +1,7 @@
 
 \subsection{0xC - Set USB Read Mode}\label{inst:setusbreadmode}
 
-This command sets the USB read mode.
+This command sets the USB read mode. In the source code a few different modes are called frequently: 0, 5, and 16. 0 Corresponds to passing the USB instruction straight to the ACDC. 5 corresponds to reading out the CC buffer. 16 corresponds to setting the trig delay to 1.
 
 \subsubsection{Bit Fields}
 \begin{figure}[hb!]
@@ -68,8 +68,54 @@ void SuMo::set_usb_read_mode(unsigned int READ_MODE)
 
 \subsubsection{Destination}
 
-%\textbf{ACDC-Firmware:SRC/dff\_async\_rst.vhd}  % project:path/to/filename.txt
+\textbf{ACC-2xSPF Firmware:src/usbWrapperACC.vhd}  % project:path/to/filename.txt
 \begin{lstlisting}[style=vhdl]
-	
+when x"C" =>
+
+CC_READ_MODE <= USB_INSTRUCTION(2 downto 0);
+if USB_INSTRUCTION(4) = '1' then
+	TRIG_MODE <= USB_INSTRUCTION(3);
+	TRIG_DELAY  (6 downto 0) <= USB_INSTRUCTION(11 downto 5);
+	SET_TRIG_SOURCE (2 downto 0) <= USB_INSTRUCTION(14 downto 12);
+end if;
+
+if delay > 10 then
+	delay := 0;
+	state <= st1_WAIT;
+--this is a hack:
+-- basically, only want to send along to AC/DC if certain conditions apply
+-- also want to only read CC info buffer if read mode = 0b101
+else
+	delay := delay + 1;
+	if delay > 1 then
+		case CC_READ_MODE is
+		when "101" =>
+			read_cc_buffer <= '1';
+			CC_INSTRUCTION <= (others=>'0');
+			CC_INSTRUCT_RDY<= '0';
+		when "110" =>
+			read_cc_buffer <= '0';
+			CC_INSTRUCTION <= (others=>'0');
+			CC_INSTRUCT_RDY<= '0';
+		---only send-along data to AC/DC cards when 111 or 000
+		when "111" =>	
+			--cc_only_instruct_rdy <= '1';
+			trig_valid_CC_only <= '1';
+			read_cc_buffer <= '0';
+			CC_INSTRUCTION <= (others=>'0');
+			CC_INSTRUCT_RDY<= '0';
+		when "000" =>
+			trig_valid_CC_only <= '0';
+			read_cc_buffer <= '0';
+			CC_INSTRUCTION <= USB_INSTRUCTION;
+			CC_INSTRUCT_RDY<= '1';
+		------
+		when others =>
+			read_cc_buffer <= '0';
+			CC_INSTRUCTION <= (others=>'0');
+			CC_INSTRUCT_RDY<= '0';
+		end case;
+	end if;
+end if;
 \end{lstlisting}
 
