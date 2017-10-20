@@ -1,7 +1,7 @@
 
-\subsection{0xB - System Card Trig Valid}\label{inst:systemcardtrigvalid}
+\subsection{0xB - Make/Prep Sync, Manage CC FIFO, and System Card Trig Valid}\label{inst:systemcardtrigvalid}
 
-This command validates system card triggers.
+This command prepares sync or validates system card triggers.
 
 \subsubsection{Bit Fields}
 \begin{figure}[hb!]
@@ -9,10 +9,16 @@ This command validates system card triggers.
 		\begin{bytefield}[endianness=big,bitwidth=1.1em]{32}
 			\bitheader{0-31} \\ 
 			% Fill in bytefield here
-			\bitbox{3}{\color{lightgray}\rule{\width}{\height}} & \bitbox{4}{brd adr} &
-			\bitbox{5}{\color{lightgray}\rule{\width}{\height}} & \bitbox{4}{0xB} & 
-			\bitbox{13}{\color{lightgray}\rule{\width}{\height}} & \bitbox{1}{1} &
-			\bitbox{1}{\rotatebox{90}{\small val}} & \bitbox{1}{\color{lightgray}\rule{\width}{\height}} \\
+			\bitbox{3}{\color{lightgray}\rule{\width}{\height}} & 
+			\bitbox{4}{brd adr} &
+			\bitbox{5}{\color{lightgray}\rule{\width}{\height}} & 
+			\bitbox{4}{0xB} & 
+			\bitbox{11}{\color{lightgray}\rule{\width}{\height}} & 
+			\bitbox{1}{\rotatebox{90}{\small ss}} &
+			\bitbox{1}{\rotatebox{90}{\tiny sync}} &
+			\bitbox{1}{\rotatebox{90}{\small sc}} &
+			\bitbox{1}{\rotatebox{90}{\small val}} & 
+			\bitbox{1}{\rotatebox{90}{\small cc}} \\
 		\end{bytefield}
 		\caption{0xB Instruct Bit Fields} % Appropriate caption here
 	\end{center}
@@ -20,15 +26,54 @@ This command validates system card triggers.
 
 \begin{table}[h]
 	\begin{tabular}{p{0.06\textwidth}p{0.30\textwidth}p{0.64\textwidth}}
-		Bits  & Name          & Description               \\ \hline
-		28-25 & board address & The address of the board. \\
-		19-16 & \textbf{0xB}  & Command marker            \\
-		2     & \textbf{0x1}  & Optional command marker   \\
-		1     & valid         & Validate system trigger   \\ \hline
+		Bits  & Name          & Description                                                    \\ \hline
+		28-25 & board address & The address of the board.                                      \\
+		19-16 & \textbf{0xB}  & Command marker                                                 \\
+		4     & set sync      & Optional command marker to set the CC sync from bit 3          \\
+		3     & sync value    & Whether to prep sync (1) or make sync (0)                      \\
+		2     & set valid     & Optional command marker to set the trig valid value from bit 1 \\
+		1     & trig valid    & Validate system trigger                                        \\
+		0     & CC FIFO       & Enables CC FIFO                                                \\ \hline
 	\end{tabular}
 \end{table}
 
 \subsubsection{Source}
+
+\textbf{acdc-daq:src/DAQinstruction.cpp}
+\begin{lstlisting}[style=c++]
+void SuMo::manage_cc_fifo(bool VALUE)
+{
+usb.createHandles();
+const unsigned int hi_cmd = 0x000B0000;
+unsigned int send_word = hi_cmd | VALUE | 15 << boardAdrOffset;
+usb.sendData(send_word);
+usb.freeHandles();
+}
+\end{lstlisting}
+
+\textbf{acdc-daq:src/DAQinstruction.cpp}
+\begin{lstlisting}[style=c++]
+void SuMo::make_sync()
+{
+usb.createHandles();
+const unsigned int hi_cmd = 0x000B0010;
+unsigned int send_word = hi_cmd;
+usb.sendData(send_word);
+usb.freeHandles();
+}
+\end{lstlisting}
+
+\textbf{acdc-daq:src/DAQinstruction.cpp}
+\begin{lstlisting}[style=c++]
+void SuMo::prep_sync()
+{
+usb.createHandles();
+const unsigned int hi_cmd = 0x000B0018;
+unsigned int send_word = hi_cmd;
+usb.sendData(send_word);
+usb.freeHandles();
+}
+\end{lstlisting}
 
 \textbf{acdc-daq:src/DAQinstruction.cpp}
 \begin{lstlisting}[style=c++]
@@ -46,8 +91,35 @@ void SuMo::system_card_trig_valid(bool valid)
 
 \subsubsection{Destination}
 
-%\textbf{ACDC-Firmware:SRC/dff\_async\_rst.vhd}  % project:path/to/filename.txt
+\textbf{ACC-2xSPF:src/usbWrapperACC.vhd}  % project:path/to/filename.txt
 \begin{lstlisting}[style=vhdl]
+when x"B" =>
 
+if USB_INSTRUCTION(2) = '1' then
+	cc_only_instruct_rdy <= '1';
+	trig_valid <= USB_INSTRUCTION(1);
+	CC_INSTRUCTION <= USB_INSTRUCTION;
+	CC_INSTRUCT_RDY<= '1';
+	SYNC_MODE <= '1';
+elsif USB_INSTRUCTION(4) = '1' then
+	cc_only_instruct_rdy <= '0';
+	trig_valid <= trig_valid;
+	CC_SYNC <= USB_INSTRUCTION(3);
+	CC_INSTRUCTION <= (others=>'0');
+	CC_INSTRUCT_RDY<= '0';
+else
+	cc_only_instruct_rdy <= '0';
+	trig_valid <= trig_valid;
+	CC_SOFT_DONE <= USB_INSTRUCTION(0);
+	CC_INSTRUCTION <= USB_INSTRUCTION;
+	CC_INSTRUCT_RDY<= '1';
+end if;
+
+if delay > 10 then
+	delay := 0;
+	state <= st1_WAIT;
+else
+	delay := delay + 1;
+end if;			
 \end{lstlisting}
 

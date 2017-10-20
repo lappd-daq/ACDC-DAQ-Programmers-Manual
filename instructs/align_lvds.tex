@@ -45,7 +45,10 @@ void SuMo::align_lvds()
 
 \subsubsection{Destination}
 
-%\textbf{ACDC-Firmware:SRC/dff\_async\_rst.vhd}  % project:path/to/filename.txt
+\textbf{ACC-2xSPF:src/usbWrapperACC.vhd}  % project:path/to/filename.txt
 \begin{lstlisting}[style=vhdl]
-	
+when x"D" =>
+
+ALIGN_LVDS_FLAG <= '1';	 		
+state <= st1_WAIT;
 \end{lstlisting}
