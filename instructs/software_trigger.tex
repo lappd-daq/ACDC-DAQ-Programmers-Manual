@@ -10,9 +10,12 @@ This command sends a software trigger (maybe).
 \begin{bytefield}[endianness=big,bitwidth=1.1em]{32}
 
 	\bitheader{0-31} \\  
-	\bitbox{12}{\color{lightgray}\rule{\width}{\height}} & \bitbox{4}{0xE} & 
-	\bitbox{10}{\color{lightgray}\rule{\width}{\height}} & \bitbox{1}{\rotatebox{90}{\tiny bin}} & 
-	\bitbox{1}{\rotatebox{90}{\tiny set}} & \bitbox{4}{mask}  \\
+	\bitbox{12}{\color{lightgray}\rule{\width}{\height}} & 
+	\bitbox{4}{0xE} & 
+	\bitbox{9}{\color{lightgray}\rule{\width}{\height}} & 
+	\bitbox{2}{bin} & 
+	\bitbox{1}{\rotatebox{90}{\tiny set}} & 
+	\bitbox{4}{mask}  \\
 
 \end{bytefield}
 \caption{Command 0x7 bit fields}
@@ -23,7 +26,7 @@ This command sends a software trigger (maybe).
 \begin{tabular}{p{0.06\textwidth}p{0.30\textwidth}p{0.64\textwidth}}
 	Bits  & Name         & Description    \\ \hline
 	19-16 & \textbf{0xE} & Command marker \\
-	5     & bin          & bin            \\
+	6-5   & bin          & bin            \\
 	4     & set bin      & Enable bin     \\
 	3-0   & mask         & Soft trig mask \\ \hline
 \end{tabular}
@@ -49,8 +52,21 @@ void SuMo::software_trigger(unsigned int SOFT_TRIG_MASK, bool set_bin, unsigned 
 
 \subsubsection{Destination}
 
-%\textbf{ACDC-Firmware:SRC/dff\_async\_rst.vhd}  % project:path/to/filename.txt
+\textbf{ACC-2xSPF:src/usbWrapperACC.vhd}  % project:path/to/filename.txt
 \begin{lstlisting}[style=vhdl]
-	
+when x"E" =>	--SOFT_TRIG
+
+cc_only_instruct_rdy <= '1';
+SYNC_TRIG <= '1';
+SOFT_TRIG <= '1';	 
+SOFT_TRIG_MASK(3 downto 0) <= USB_INSTRUCTION(3 downto 0);
+--SOFT_TRIG_MASK <= (others=>'1');  --trigger every AC/DC
+SOFT_TRIG_BIN	<= USB_INSTRUCTION(6 downto 4);
+if delay > 8 then
+	delay := 0;
+	state <= st1_WAIT;
+else
+	delay := delay + 1;
+end if;		
 \end{lstlisting}
 
