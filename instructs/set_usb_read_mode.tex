@@ -9,9 +9,16 @@ This command sets the USB read mode.
 		\begin{bytefield}[endianness=big,bitwidth=1.1em]{32}
 			\bitheader{0-31} \\ 
 			% Fill in bytefield here
-			\bitbox{3}{\color{lightgray}\rule{\width}{\height}} & \bitbox{4}{brd adr} &
-			\bitbox{5}{\color{lightgray}\rule{\width}{\height}} & \bitbox{4}{0xC} &
-			\bitbox{16}{read mode}\\
+			\bitbox{3}{\color{lightgray}\rule{\width}{\height}} & 
+			\bitbox{4}{brd adr} &
+			\bitbox{5}{\color{lightgray}\rule{\width}{\height}} & 
+			\bitbox{4}{0xC} &
+			\bitbox{1}{\color{lightgray}\rule{\width}{\height}} & 
+			\bitbox{3}{src} & 
+			\bitbox{7}{delay} & 
+			\bitbox{1}{\rotatebox{90}{\small set}} & 
+			\bitbox{1}{\rotatebox{90}{\scriptsize  trig}} &
+			\bitbox{3}{mode}\\
 		\end{bytefield}
 		\caption{0x6} % Appropriate caption here
 	\end{center}
@@ -19,12 +26,29 @@ This command sets the USB read mode.
 
 \begin{table}[h]
 \begin{tabular}{p{0.06\textwidth}p{0.30\textwidth}p{0.64\textwidth}}
-	Bits  & Name          & Description                \\ \hline
-	28-25 & board address & The address of the board.  \\
-	19-16 & \textbf{0xC}  & Command marker             \\
-	15-0  & read mode     & The value of the read mode \\ \hline
+	Bits  & Name            & Description                                                      \\ \hline
+	28-25 & board address   & The address of the board.                                        \\
+	19-16 & \textbf{0xC}    & Command marker                                                   \\
+	14-12 & trig source     & If 4 is enabled, defines the trig source                         \\
+	11-5  & trig delay      &                                                                  \\
+	4     & set trig source & If enabled, sets the trig source from bits 14-12                 \\
+	3     & trig mode       &                                                                  \\
+	2-0   & read mode       & The value of the read mode. Shown further in \autoref{readmodes} \\ \hline
 \end{tabular}
 \end{table}
+
+\subsubsection{Read Modes}\label{readmodes}
+
+\begin{table}[h]
+	\begin{tabular}{p{0.06\textwidth}p{0.30\textwidth}p{0.64\textwidth}}
+		Bits & Mode                     & Description                \\ \hline
+		000  & ACDC instruction         &                            \\
+		111  & ACDC trig validd CC only &                            \\
+		101  & Read CC buffer           & The value of the read mode \\
+		110  &                          &                            \\ \hline
+	\end{tabular}
+\end{table}
+
 
 \subsubsection{Source}
 
